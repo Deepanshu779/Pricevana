@@ -93,21 +93,29 @@ The backend fits a lightweight **linear regression model** to available pricing 
 Pricevana/
 ├── backend/
 │   ├── app.py                  # Flask REST API, scraping & analytics
-│   └── requirements.txt        # Python dependencies
+│   ├── requirements.txt        # Python dependencies
+│   └── Procfile                # PaaS process configuration (Render/Railway)
 │
 ├── frontend/
-│   ├── index.html              # Main web application
+│   ├── index.html              # Main web application dashboard
 │   └── static/
-│       ├── style.css           # UI styles and animations
-│       ├── script.js           # Client-side application logic
-│       ├── logo.jpg            # Brand logo
+│       ├── style.css           # UI styles and responsive animations
+│       ├── script.js           # Client-side application logic & API client
+│       ├── logo.jpg            # Brand logo & favicon
 │       └── images/
 │           ├── hero-price-tracker.webp
 │           ├── smart-savings.webp
 │           ├── browser-assistant.webp
 │           └── stores/          # Retailer / partner logos
 │
-└── README.md
+├── tests/
+│   └── test_app.py             # Automated unit tests for all REST API routes
+│
+├── .env.example                # Template for environment variables
+├── .gitignore                  # Git ignore rules for Python, IDE, and OS artifacts
+├── Procfile                    # Root deployment process definition
+├── vercel.json                 # Vercel deployment configuration
+└── README.md                   # Project documentation
 ```
 
 ---
@@ -145,6 +153,14 @@ python -m http.server 8000
 Open:
 
 `http://localhost:8000`
+
+### 4. Run Automated Tests
+
+Run the backend test suite:
+
+```bash
+python -m unittest tests/test_app.py -v
+```
 
 ---
 

@@ -9,3 +9,5 @@ pandas
 scikit-learn
 gunicorn
 requests
+python-dotenv
+pytest

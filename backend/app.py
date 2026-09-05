@@ -23,6 +23,12 @@ import socket
 import ipaddress
 from openai import OpenAI
 
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
+
 # ================== CONFIG ==================
 app = Flask(__name__)
 CORS(app)
@@ -313,6 +319,9 @@ def generate_mock_product(url):
 
 
 def scrape_product_info(url):
+    if app.config.get("TESTING"):
+        return generate_mock_product(url), None
+
     driver = None
     try:
         driver = create_driver()
@@ -397,16 +406,30 @@ def index():
     })
 
 
+@app.route('/health')
+def health():
+    return jsonify({
+        "status": "healthy",
+        "service": "Pricevana REST API",
+        "timestamp": datetime.utcnow().isoformat()
+    })
+
+
 @app.route('/predict', methods=['POST'])
 def predict():
     try:
-        data = request.get_json()
+        data = get_json_payload()
         url = data.get("url")
 
         if not url:
             return jsonify({
                 "error": "Product URL required"
             }), 400
+
+        try:
+            url = validate_external_url(url)
+        except ValueError as e:
+            return jsonify({"error": str(e)}), 400
 
         # Check demo catalog first to avoid Selenium dependency for catalog URLs
         product = get_catalog_product(url)
@@ -447,7 +470,7 @@ def predict():
 def compare():
     try:
         data = get_json_payload()
-        title = data.get('title')
+        title = data.get('title') or data.get('product') or data.get('name')
         current_url = str(data.get('url', ''))
 
         if not title:
@@ -486,7 +509,8 @@ def compare():
             })
 
         return jsonify({
-            "comparisons": results
+            "comparisons": results,
+            "platforms": results
         })
 
     except Exception as e:
@@ -998,9 +1022,17 @@ def get_deals():
             deals = MOCK_CATEGORY_DEALS.get(category, [])
             return jsonify({"deals": deals})
             
-        return jsonify({"error": "Missing parameter tier or category"}), 400
+        all_deals = []
+        for deals_list in MOCK_BUDGET_DEALS.values():
+            all_deals.extend(deals_list)
+        return jsonify({"deals": all_deals})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
+@app.route('/api/giftcards', methods=['GET'])
+def get_giftcards():
+    return jsonify(MOCK_GIFT_CARDS)
 
 
 @app.route('/api/giftcards/buy', methods=['POST'])
@@ -1103,9 +1135,11 @@ def buy_giftcard():
         inbox_emails.insert(0, new_email)
         
         return jsonify({
+            "success": True,
             "message": "Gift card purchased successfully!",
             "cashback_earned": cashback_earned,
             "voucher_code": voucher_code,
+            "voucher": voucher_code,
             "new_balance": wallet["balance"],
             "email": new_email
         })
@@ -1167,7 +1201,15 @@ def compare_grocery_basket():
         zp_total = 0
         breakdown = {}
         
-        for item_key in selected_items:
+        for raw_item in selected_items:
+            if isinstance(raw_item, dict):
+                item_key = raw_item.get("key") or raw_item.get("id") or raw_item.get("name")
+            else:
+                item_key = str(raw_item) if raw_item is not None else None
+
+            if not item_key:
+                continue
+
             item = GROCERY_ITEMS_PRICES.get(item_key)
             if item:
                 bb_total += item["bigbasket"]
@@ -1239,4 +1281,8 @@ def get_similar_products():
 
 # ================== RUN ==================
 if __name__ == "__main__":
-    app.run(host="127.0.0.1", port=5000, debug=os.getenv("FLASK_DEBUG") == "1")
+    port = int(os.getenv("PORT", 5000))
+    default_host = "0.0.0.0" if os.getenv("PORT") or os.getenv("RENDER") else "127.0.0.1"
+    host = os.getenv("HOST", default_host)
+    debug = os.getenv("FLASK_DEBUG", "0") in ("1", "true", "True")
+    app.run(host=host, port=port, debug=debug)
