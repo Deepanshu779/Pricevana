@@ -5,14 +5,30 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Pricevana | Price History, Deals and Shopping Assistant</title>
     <meta name="description" content="Track price fluctuations, predict deals, auto-apply coupons, and manage shopping emails and cashback rewards in one premium dashboard." />
+    <meta name="color-scheme" content="light dark" />
     <!-- Favicon -->
     <link rel="icon" href="static/logo.jpg" type="image/jpeg" />
+    <!-- Anti-FOUC Theme Script -->
+    <script>
+        (function() {
+            try {
+                var saved = localStorage.getItem('pricevana-theme');
+                var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                var theme = saved || (prefersDark ? 'dark' : 'light');
+                document.documentElement.setAttribute('data-theme', theme);
+                document.documentElement.className = 'theme-' + theme;
+            } catch (e) {}
+        })();
+    </script>
     <!-- CSS -->
-    <link rel="stylesheet" href="static/style.css?v=2.1" />
+    <link rel="stylesheet" href="static/style.css?v=2.2" />
     <!-- Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <!-- Charts -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Core Config & Theme Modules -->
+    <script src="static/js/config.js"></script>
+    <script src="static/js/theme.js"></script>
 </head>
 <body>
     <!-- Live Notification Toast -->
@@ -118,12 +134,13 @@
                 </div>
             </div>
             
-            <div class="theme-picker-container" style="display: flex; align-items: center; gap: 8px; margin-left: auto; margin-right: 16px;">
-                <span style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; color: var(--text-muted);">Theme</span>
-                <div class="theme-picker-pill" style="display: flex; background: var(--panel-bg); padding: 4px; border-radius: 99px; border: 1px solid var(--border-color); gap: 6px;">
-                    <button class="theme-circle-btn active" data-theme="lavender" style="width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--primary); background: #5938de; cursor: pointer; padding: 0; outline: none; transition: var(--transition);" title="Lavender Dusk"></button>
-                    <button class="theme-circle-btn" data-theme="emerald" style="width: 22px; height: 22px; border-radius: 50%; border: 2px solid transparent; background: #0f766e; cursor: pointer; padding: 0; outline: none; transition: var(--transition);" title="Emerald Sage"></button>
-                </div>
+            <!-- Modern Dark / Light Mode Switcher -->
+            <div class="header-actions" style="margin-left: auto; margin-right: 16px;">
+                <button id="themeToggleBtn" class="theme-toggle-btn" aria-label="Toggle dark/light theme" title="Toggle color theme">
+                    <i data-lucide="moon" class="theme-toggle-icon icon-moon"></i>
+                    <i data-lucide="sun" class="theme-toggle-icon icon-sun"></i>
+                    <span class="theme-toggle-label">Dark</span>
+                </button>
             </div>
 
             <nav class="site-nav">

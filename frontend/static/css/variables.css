@@ -1,0 +1,154 @@
+/* ==========================================================================
+   Pricevana Design System - CSS Variables & Themes
+   Supports W3C color-scheme, Light & Dark themes, system preference sync
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap');
+
+:root {
+  /* Default font families */
+  --font-heading: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* Global Layout Tokens */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 22px;
+  --radius-full: 9999px;
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-smooth: 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Primary Brand Colors */
+  --primary: #6366f1;
+  --primary-light: #818cf8;
+  --primary-glow: rgba(99, 102, 241, 0.35);
+  --secondary: #10b981;
+  --secondary-light: rgba(16, 185, 129, 0.12);
+  --accent-rose: #f43f5e;
+  --accent-amber: #f59e0b;
+
+  /* Light Theme (Default) */
+  --bg-color: #f8fafc;
+  --body-radial: radial-gradient(circle at 50% 0%, #eef2ff 0%, #f8fafc 70%);
+  --card-bg: rgba(255, 255, 255, 0.85);
+  --card-bg-solid: #ffffff;
+  --glass-border: rgba(99, 102, 241, 0.12);
+  --border-color: #e2e8f0;
+  --border-subtle: #f1f5f9;
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --text-subtle: #94a3b8;
+  --input-bg: rgba(255, 255, 255, 0.95);
+  --input-border: #cbd5e1;
+  --panel-bg: #f1f5f9;
+  --badge-bg: #e0e7ff;
+  --badge-text: #4338ca;
+  --shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.04);
+  --shadow-premium: 0 10px 30px rgba(15, 23, 42, 0.08);
+  --shadow-hover: 0 18px 40px rgba(15, 23, 42, 0.14);
+  --ai-panel-bg: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  --ai-panel-border: #bfdbfe;
+  --ai-panel-text: #1e3a8a;
+  --ai-panel-header: #1e40af;
+
+  color-scheme: light dark;
+}
+
+/* ☀️ Explicit Light Theme Override */
+[data-theme="light"],
+.theme-light,
+.theme-lavender {
+  color-scheme: light;
+  --bg-color: #f8fafc;
+  --body-radial: radial-gradient(circle at 50% 0%, #eef2ff 0%, #f8fafc 70%);
+  --card-bg: rgba(255, 255, 255, 0.85);
+  --card-bg-solid: #ffffff;
+  --glass-border: rgba(99, 102, 241, 0.12);
+  --border-color: #e2e8f0;
+  --border-subtle: #f1f5f9;
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --text-subtle: #94a3b8;
+  --input-bg: rgba(255, 255, 255, 0.95);
+  --input-border: #cbd5e1;
+  --panel-bg: #f1f5f9;
+  --badge-bg: #e0e7ff;
+  --badge-text: #4338ca;
+  --shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.04);
+  --shadow-premium: 0 10px 30px rgba(15, 23, 42, 0.08);
+  --shadow-hover: 0 18px 40px rgba(15, 23, 42, 0.14);
+  --ai-panel-bg: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  --ai-panel-border: #bfdbfe;
+  --ai-panel-text: #1e3a8a;
+  --ai-panel-header: #1e40af;
+}
+
+/* 🌙 Explicit Dark Theme (Deep Space Obsidian) */
+[data-theme="dark"],
+.theme-dark,
+.theme-midnight,
+.theme-cyberpunk {
+  color-scheme: dark;
+  --primary: #818cf8;
+  --primary-light: #a5b4fc;
+  --primary-glow: rgba(129, 140, 248, 0.35);
+  --secondary: #10b981;
+  --secondary-light: rgba(16, 185, 129, 0.18);
+  --bg-color: #0b0f19;
+  --body-radial: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #0b0f19 75%);
+  --card-bg: rgba(17, 24, 39, 0.78);
+  --card-bg-solid: #111827;
+  --glass-border: rgba(129, 140, 248, 0.18);
+  --border-color: #1f293d;
+  --border-subtle: #1e293b;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-subtle: #64748b;
+  --input-bg: rgba(30, 41, 59, 0.75);
+  --input-border: #334155;
+  --panel-bg: #111827;
+  --badge-bg: #1e1b4b;
+  --badge-text: #c7d2fe;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.35);
+  --shadow-premium: 0 10px 32px rgba(0, 0, 0, 0.55);
+  --shadow-hover: 0 18px 44px rgba(0, 0, 0, 0.75);
+  --ai-panel-bg: linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%);
+  --ai-panel-border: #312e81;
+  --ai-panel-text: #e0e7ff;
+  --ai-panel-header: #a5b4fc;
+}
+
+/* System preference automatic dark mode when no manual override is set */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not(.theme-light):not(.theme-lavender) {
+    color-scheme: dark;
+    --primary: #818cf8;
+    --primary-light: #a5b4fc;
+    --primary-glow: rgba(129, 140, 248, 0.35);
+    --secondary: #10b981;
+    --secondary-light: rgba(16, 185, 129, 0.18);
+    --bg-color: #0b0f19;
+    --body-radial: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #0b0f19 75%);
+    --card-bg: rgba(17, 24, 39, 0.78);
+    --card-bg-solid: #111827;
+    --glass-border: rgba(129, 140, 248, 0.18);
+    --border-color: #1f293d;
+    --border-subtle: #1e293b;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --text-subtle: #64748b;
+    --input-bg: rgba(30, 41, 59, 0.75);
+    --input-border: #334155;
+    --panel-bg: #111827;
+    --badge-bg: #1e1b4b;
+    --badge-text: #c7d2fe;
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.35);
+    --shadow-premium: 0 10px 32px rgba(0, 0, 0, 0.55);
+    --shadow-hover: 0 18px 44px rgba(0, 0, 0, 0.75);
+    --ai-panel-bg: linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%);
+    --ai-panel-border: #312e81;
+    --ai-panel-text: #e0e7ff;
+    --ai-panel-header: #a5b4fc;
+  }
+}

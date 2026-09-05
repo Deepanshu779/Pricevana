@@ -25,6 +25,7 @@ Pricevana combines web scraping, historical price analytics, machine learning, a
 
 | Feature | Description |
 | --- | --- |
+| 🌗 Dark & Light Themes | Native W3C color-scheme toggle with Sun/Moon icons, system preference detection, and zero FOUC |
 | 🔎 Product URL Analysis | Analyze product links from Amazon India, Flipkart, and Myntra |
 | 📈 Price History | Visualize historical price movement and identify previous lows |
 | 🤖 ML Price Prediction | Uses linear regression to estimate a product's near-term 7-day price trajectory |
@@ -32,7 +33,7 @@ Pricevana combines web scraping, historical price analytics, machine learning, a
 | 🏷️ Coupon Discovery | Scans available promotional codes and evaluates potential savings |
 | 🖼️ Product Image Extraction | Reads product metadata such as OpenGraph/Twitter images for fast visual previews |
 | 💸 Savings Workspace | Track discounts, cashback information, notifications, and price-drop alerts |
-| 🌍 Multi-Environment Frontend | Frontend can switch request targets for local development or production deployment |
+| 🌍 Multi-Environment Frontend | Seamlessly switches between local Flask development and production cloud endpoints |
 
 ---
 
@@ -41,16 +42,15 @@ Pricevana combines web scraping, historical price analytics, machine learning, a
 ```text
 Product URL
     ↓
-Pricevana Frontend
+Pricevana Frontend (Light / Dark Theme)
     ↓
-Flask REST API
-    ├── Product / metadata extraction
-    ├── Marketplace scraping
-    ├── Historical price analysis
-    ├── Linear regression prediction
-    └── Coupon / savings analysis
+Flask Modular REST API (Blueprints Architecture)
+    ├── Validator & Security (SSRF protection)
+    ├── Scraper Service (Selenium + Mock fallback)
+    ├── ML Engine (Linear regression forecasting)
+    └── Data Layer (Deals, coupons, gift cards, grocery index)
     ↓
-Analytics shown in dashboard
+Dynamic interactive analytics shown in dashboard
 ```
 
 ### Price prediction
@@ -63,27 +63,25 @@ The backend fits a lightweight **linear regression model** to available pricing 
 ## 🏗️ Technical Architecture
 
 ### Frontend
-- HTML5
-- Vanilla CSS
-- Modular ES6 JavaScript
-- Responsive dashboard UI
-- Canvas-based charts
-- CSS conic-gradient gauge visualization
+- Semantic HTML5 with anti-FOUC inline theme bootstrap
+- Modular CSS design system (`variables.css`, `navigation.css`, `style.css`)
+- Light & Dark mode controller with `localStorage` persistence and OS media sync
+- Responsive SaaS dashboard with glassmorphism aesthetics
+- Canvas-based Chart.js graphs adaptive to dark/light color schemes
+- CSS conic-gradient speed gauge visualization
 
-### Backend
-- Python
-- Flask
-- Flask-CORS
-- scikit-learn
-- Selenium
-- HTML/meta parsing
-
-### Data & Intelligence
-- Historical price processing
-- Linear regression
-- Product metadata extraction
-- Marketplace-specific scraping logic
-- Coupon discovery workflows
+### Backend (Modular Blueprint Pattern)
+- Flask Application Factory (`create_app`)
+- REST Blueprints:
+  - `predictor_bp`: `/predict`, `/compare`, `/ai-advice`, `/api/similar`
+  - `deals_bp`: `/api/deals`, `/api/search`
+  - `workspace_bp`: `/api/wallet`, `/api/inbox`, `/api/alerts`, `/api/coupons`, `/api/giftcards`, `/api/spend-lens`, `/api/basket/compare`
+- Core Services:
+  - `validator.py`: SSRF prevention and URL validation
+  - `ml_engine.py`: Scikit-learn regression models
+  - `scraper.py`: Headless browser scraping and demo fallback
+- Data Layer:
+  - `mock_db.py`: In-memory state and curated store catalogs
 
 ---
 
@@ -92,23 +90,43 @@ The backend fits a lightweight **linear regression model** to available pricing 
 ```text
 Pricevana/
 ├── backend/
-│   ├── app.py                  # Flask REST API, scraping & analytics
+│   ├── app/                    # Modular Flask Application Package
+│   │   ├── __init__.py         # Application Factory & Blueprint Registration
+│   │   ├── config.py           # Configuration & Environment Settings
+│   │   ├── api/                # Modular REST API Blueprints
+│   │   │   ├── predictor.py    # Price prediction, comparisons & AI advice
+│   │   │   ├── deals.py        # Flash deals & keyword search
+│   │   │   └── workspace.py    # Wallet, inbox, alerts, coupons, grocery basket
+│   │   ├── services/           # Core Business Logic & Processing
+│   │   │   ├── ml_engine.py    # Linear regression forecasting
+│   │   │   ├── scraper.py      # E-commerce scrapers & fallback generator
+│   │   │   └── validator.py    # URL safety & SSRF defense
+│   │   └── data/               # Catalogs & In-Memory Store
+│   │       └── mock_db.py      # Products, coupons, gift cards & prices
+│   ├── app.py                  # Entrypoint runner (supports `python app.py`)
 │   ├── requirements.txt        # Python dependencies
 │   └── Procfile                # PaaS process configuration (Render/Railway)
 │
 ├── frontend/
 │   ├── index.html              # Main web application dashboard
 │   └── static/
-│       ├── style.css           # UI styles and responsive animations
+│       ├── css/                # Modular Design System
+│       │   ├── variables.css   # Light & Dark theme tokens, design system variables
+│       │   └── navigation.css  # Header, navbar tabs, theme toggle switch
+│       ├── js/                 # Modular Frontend Architecture
+│       │   ├── config.js       # Dynamic API_BASE resolution & global config
+│       │   └── theme.js        # Professional Dark / Light theme controller
+│       ├── style.css           # Master stylesheet (imports modular CSS)
 │       ├── script.js           # Client-side application logic & API client
 │       ├── logo.jpg            # Brand logo & favicon
-│       └── images/
+│       └── images/             # Visual previews & marketplace store logos
 │           ├── hero-price-tracker.webp
 │           ├── smart-savings.webp
 │           ├── browser-assistant.webp
 │           └── stores/          # Retailer / partner logos
 │
 ├── tests/
+│   ├── __init__.py
 │   └── test_app.py             # Automated unit tests for all REST API routes
 │
 ├── .env.example                # Template for environment variables

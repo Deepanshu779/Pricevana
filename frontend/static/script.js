@@ -135,48 +135,24 @@ document.addEventListener('DOMContentLoaded', () => {
     if (yearEl) yearEl.textContent = new Date().getFullYear();
 
     // ------------------ PREMIUM THEME CONTROLLER ------------------
-    const themeBtns = document.querySelectorAll('.theme-circle-btn');
-    themeBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            const theme = btn.getAttribute('data-theme');
-            setTheme(theme);
-        });
-    });
-
-    function setTheme(theme) {
-        document.body.className = '';
-        document.body.classList.add(`theme-${theme}`);
-        
-        themeBtns.forEach(btn => {
-            if (btn.getAttribute('data-theme') === theme) {
-                btn.style.borderColor = 'var(--text-main)';
-                btn.classList.add('active');
-            } else {
-                btn.style.borderColor = 'transparent';
-                btn.classList.remove('active');
-            }
-        });
-
-        try {
-            localStorage.setItem('pricevana-theme', theme);
-        } catch (e) {
-            console.warn("localStorage is not accessible:", e);
+    window.addEventListener('pricevana-theme-changed', (e) => {
+        if (window.lucide) {
+            window.lucide.createIcons();
         }
-        
-        // Dynamic chart refresh on theme change
-        if (priceChart && window.lastPredictionData) {
+        if (typeof priceChart !== 'undefined' && priceChart && window.lastPredictionData) {
             initChart(window.lastPredictionData.history, window.lastPredictionData.future_predictions);
         }
-    }
+    });
 
-    // Load saved or default theme safely
-    let savedTheme = 'lavender';
-    try {
-        savedTheme = localStorage.getItem('pricevana-theme') || 'lavender';
-    } catch (e) {
-        console.warn("localStorage is not accessible:", e);
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+    if (themeToggleBtn) {
+        themeToggleBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (window.PricevanaTheme) {
+                window.PricevanaTheme.toggleTheme();
+            }
+        });
     }
-    setTheme(savedTheme);
 
     // ------------------ INITIAL WORKSPACE SYNC ------------------
     setTimeout(() => {
@@ -1855,18 +1831,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function getChartColors() {
-        const style = getComputedStyle(document.body);
-        const primary = style.getPropertyValue('--primary').trim() || '#5938de';
-        const textMuted = style.getPropertyValue('--text-muted').trim() || '#6f6b80';
+        const style = getComputedStyle(document.documentElement);
+        const primary = style.getPropertyValue('--primary').trim() || '#6366f1';
+        const textMuted = style.getPropertyValue('--text-muted').trim() || '#94a3b8';
         
-        const isDark = document.body.classList.contains('theme-midnight') || document.body.classList.contains('theme-cyberpunk');
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark'
+            || document.body.classList.contains('theme-dark')
+            || document.body.classList.contains('theme-midnight')
+            || document.body.classList.contains('theme-cyberpunk');
         
         return {
             primary: primary,
-            background: hexToRgba(primary, 0.08),
-            grid: isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.05)',
+            background: hexToRgba(primary, isDark ? 0.18 : 0.08),
+            grid: isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.06)',
             text: textMuted,
-            pointBg: isDark ? '#15151b' : '#fff'
+            pointBg: isDark ? '#111827' : '#ffffff'
         };
     }
 
